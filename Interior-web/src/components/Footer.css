@@ -1,0 +1,19 @@
+.footer {
+  background: #222;
+  color: #eee;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.social-links {
+  margin-top: 0.5rem;
+}
+
+.social-links a {
+  color: #c19a6b;
+  margin: 0 0.5rem;
+  text-decoration: none;
+}
+.social-links a:hover {
+  color: #fff;
+}
