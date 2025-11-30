@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "./Pages.css";
 
+// ✅ AUTO SWITCH LOCAL / LIVE
+const API_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const ContactSimple = () => {
 
   const [formData, setFormData] = useState({
@@ -23,37 +26,41 @@ const ContactSimple = () => {
 
   // ✅ SUBMIT FORM
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
-    setSuccess("");
+  setLoading(true);
+  setSuccess("");
 
-    try {
-      const res = await fetch("http://localhost:5000/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+  try {
+    const res = await fetch(`${API_URL}/api/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setSuccess("✅ Message sent successfully!");
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
       });
-
-      const data = await res.json();
-
-      if (data.success) {
-        setSuccess("✅ Message sent successfully!");
-        setFormData({
-          name: "",
-          email: "",
-          subject: "",
-          message: "",
-        });
-      }
-
-    } catch (error) {
-      console.error("ERROR:", error);
-      alert("❌ Server Error");
+    } else {
+      alert("❌ Failed to send message");
     }
 
-    setLoading(false);
-  };
+  } catch (error) {
+    console.error("ERROR:", error);
+    alert("❌ Server Error");
+  }
+
+  setLoading(false);
+};
 
   return (
     <>
@@ -61,14 +68,11 @@ const ContactSimple = () => {
       {/* ✅ HERO BANNER */}
       <section className="contact-hero">
         <div className="contact-overlay"></div>
-
         <div className="contact-hero-content container">
           <h1>Get In Touch</h1>
-          <p>We’d love to hear from you! Let’s bring your interior vision to life.</p>
+          <p>We’d love to hear from you!</p>
         </div>
       </section>
-
-
 
       {/* ✅ FORM + IMAGE */}
       <section className="contact-form-section">
@@ -82,16 +86,13 @@ const ContactSimple = () => {
             />
           </div>
 
-
-          {/* ✅ RIGHT FORM */}
+          {/* RIGHT FORM */}
           <form className="contact-form" onSubmit={handleSubmit}>
 
             <h2>Send Us a Message</h2>
-
-            {success && <p style={{ color: "green", marginBottom: "10px" }}>{success}</p>}
+            {success && <p style={{ color: "green" }}>{success}</p>}
 
             <div className="form-group">
-
               <input
                 type="text"
                 name="name"
@@ -109,10 +110,8 @@ const ContactSimple = () => {
                 onChange={handleChange}
                 required
               />
-
             </div>
 
-            {/* ✅ SPACING FIXED */}
             <input
               style={{ marginTop: "12px" }}
               type="text"
@@ -126,19 +125,14 @@ const ContactSimple = () => {
             <textarea
               style={{ marginTop: "12px" }}
               name="message"
-              rows={5}
+              rows="5"
               placeholder="Your Message"
               value={formData.message}
               onChange={handleChange}
               required
             ></textarea>
 
-            {/* ✅ FIXED BUTTON */}
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={loading}
-            >
+            <button className="btn-primary" type="submit">
               {loading ? "Sending..." : "Send Message"}
             </button>
 
@@ -147,21 +141,16 @@ const ContactSimple = () => {
         </div>
       </section>
 
-
-
-      {/* ✅ GOOGLE MAP (FULL FIXED) */}
+      {/* ✅ MAP */}
       <section className="contact-map">
-        <div style={{ width: "100%", height: "450px" }}>
-          <iframe
-            title="Our Location"
-            src="https://www.google.com/maps?q=Mumbai&output=embed"
-            width="100%"
-            height="100%"
-            style={{ border: "0" }}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
+        <iframe
+          title="Location"
+          src="https://www.google.com/maps?q=Mumbai&output=embed"
+          width="100%"
+          height="450"
+          style={{ border: 0 }}
+          loading="lazy"
+        ></iframe>
       </section>
 
     </>
